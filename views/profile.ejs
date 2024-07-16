@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div class="w-full min-h-screen bg-zinc-900 text-white p-10">
+      <div class="top-content flex w-full justify-between mb-6">
+        <h1 class="text-3xl">
+          <span class="font-light">Hello,</span> <%= user.name %> 👋🏻
+        </h1>
+        <a
+          class="px-3 py-2 bg-red-500 rounded-md cursor-pointer"
+          href="/logout"
+        >
+          Logout
+        </a>
+      </div>
+
+      <h2 class="text-xl mb-5">You can create a new post...</h2>
+      <form id="createPostForm" action="/post" method="post">
+        <textarea
+          class="block w-1/3 p-3 resize-none bg-transparent border-2 border-zinc-800 rounded-md outline-none"
+          name="content"
+          placeholder="Write a post"
+          id="createPostText"
+        ></textarea>
+        <input
+          class="w-40 text-md px-3 py-2 bg-blue-500 rounded-md cursor-pointer block mt-2"
+          type="submit"
+          value="Create New Post"
+        />
+      </form>
+      <div class="posts mt-20">
+        <h2 class="text-xl text-zinc-400 mb-5">Your Posts...</h2>
+        <div class="post-container">
+          <% if (user.posts.length === 0) { %>
+          <h1 class="text-md text-yellow-200">No Existing Posts...</h1>
+          <% } else { %> <% user.posts.reverse().forEach(function(post) { %>
+          <div
+            class="post break-words w-1/3 p-4 border-[1px] bg-zinc-800 border-zinc-700 rounded-md mb-4"
+          >
+            <h3 class="text-blue-500 mb-2">@<%= user.name %></h3>
+            <p class="text-sm tracking-tight"><%= post.content %></p>
+            <% if (post.likes.length == 1) {%>
+            <small><%= post.likes.length %> like</small>
+            <%} else {%>
+            <small><%= post.likes.length %> likes</small>
+            <%}%>
+            <div class="btns flex gap-2 mt-2">
+              <a class="text-blue-500" href="/like/<%= post.id %>">
+                <%= post.likes.indexOf(user._id) ? "Like" : "Unlike" %>
+              </a>
+              <a class="text-zinc-500" href="/edit/<%= post._id %>">Edit</a>
+            </div>
+          </div>
+          <% })} %>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const enterKeySubmit = (form) => { 
+        return (e) => { 
+          if (e.key === "Enter" && !e.shiftKey) { 
+            document.getElementById(form).submit(); 
+          } 
+        }; 
+      }; 
+
+     document.getElementById("createPostText").addEventListener("keydown", enterKeySubmit("createPostForm"));
+   </script>
+  </body>
+</html>
